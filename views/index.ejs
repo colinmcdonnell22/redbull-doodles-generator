@@ -4,197 +4,184 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tweak Generator</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* General Reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        /* General Styles */
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #fdfdfd;
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
             color: #333;
             margin: 0;
+            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
         }
 
-        .generator-container {
-            max-width: 600px;
+        .container {
+            background: #fff;
+            border: 2px solid #ddd;
+            padding: 1.5rem;
+            border-radius: 8px;
+            max-width: 500px;
             width: 100%;
-            background: #ffffff;
-            border: 1px solid #eaeaea;
-            border-radius: 10px;
-            padding: 40px;
-            box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.1);
-            text-align: left;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
             font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: #222;
-            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+            color: #444;
+            text-align: center;
         }
 
-        p {
+        p.subtitle {
             font-size: 1rem;
-            color: #555;
-            margin-bottom: 20px;
-            line-height: 1.5;
+            color: #666;
+            margin-bottom: 1.5rem;
+            text-align: center;
         }
 
-        form label {
-            font-weight: 600;
-            margin-bottom: 10px;
-            display: block;
-            font-size: 0.95rem;
-            color: #333;
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        label {
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-bottom: 0.2rem;
+            color: #444;
         }
 
         input, select {
-            width: 100%;
-            padding: 12px;
-            font-size: 1rem;
-            margin-bottom: 20px;
-            border: 1px solid #eaeaea;
-            border-radius: 6px;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: #4f46e5;
-            box-shadow: 0px 0px 4px rgba(79, 70, 229, 0.5);
-        }
-
-        .slider-container {
-            margin-bottom: 20px;
-        }
-
-        .slider-label {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
             font-size: 0.9rem;
-            color: #333;
-        }
-
-        .slider {
-            -webkit-appearance: none;
-            width: 100%;
-            height: 8px;
+            padding: 0.4rem 0.6rem;
+            border: 1px solid #ddd;
             border-radius: 4px;
+            width: 100%;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
             background: #ddd;
+            border-radius: 5px;
             outline: none;
-            transition: background-color 0.2s;
         }
 
-        .slider:hover {
-            background-color: #ccc;
-        }
-
-        .slider::-webkit-slider-thumb {
+        input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
             width: 16px;
             height: 16px;
+            background: #444;
             border-radius: 50%;
-            background: #4f46e5;
             cursor: pointer;
-            transition: background-color 0.2s;
         }
 
-        .slider::-webkit-slider-thumb:hover {
-            background: #3a37c7;
+        input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            background: #444;
+            border-radius: 50%;
+            cursor: pointer;
         }
 
-        .button {
-            display: inline-block;
-            width: 100%;
-            background-color: #4f46e5;
-            color: white;
-            padding: 15px;
-            text-align: center;
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .slider-value {
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: #444;
+        }
+
+        button {
+            background: linear-gradient(90deg, #6C63FF, #7A88FF);
+            color: #fff;
+            font-weight: bold;
             font-size: 1rem;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
             text-transform: uppercase;
-            transition: background-color 0.3s, transform 0.2s;
+            padding: 0.6rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
         }
 
-        .button:hover {
-            background-color: #3a37c7;
-            transform: translateY(-2px);
+        button:hover {
+            background: linear-gradient(90deg, #7A88FF, #6C63FF);
         }
 
-        .button:active {
-            transform: translateY(0);
-        }
-
-        @media (max-width: 768px) {
-            .generator-container {
-                padding: 20px;
-            }
+        button:active {
+            transform: scale(0.98);
         }
     </style>
 </head>
 <body>
-    <div class="generator-container">
+    <div class="container">
         <h1>Tweak Generator</h1>
-        <p>Design your unique Tweak! Use the sliders and dropdowns to customize your creation. Let your imagination run wild!</p>
+        <p class="subtitle">Create your unique Tweak image! Fill out the details below.</p>
         <form action="/generate" method="POST">
-            <!-- Prompt Input -->
-            <label for="prompt">Describe your Tweak</label>
-            <input type="text" id="prompt" name="prompt" placeholder="e.g., A futuristic robot in Tweak style" required>
+            <!-- Prompt -->
+            <label for="prompt">What's your idea?</label>
+            <input type="text" id="prompt" name="prompt" placeholder="e.g., A frog in Tweak style" required>
 
-            <!-- LoRA Scale Slider -->
+            <!-- LoRA Scale -->
+            <label for="lora_scale">How much LoRA magic?</label>
             <div class="slider-container">
-                <div class="slider-label">
-                    <span>How much LoRA magic?</span>
-                    <span id="lora-scale-value">1</span>
-                </div>
-                <input type="range" id="lora_scale" name="lora_scale" min="0" max="3" step="0.1" value="1" class="slider" oninput="updateSliderValue('lora_scale', this.value)">
-            </div>
+                <input type="range" id="lora_scale" name="lora_scale" min="0" max="3" step="0.1" value="1" oninput="updateValue('lora', this.value)">
+                <span class="slider-value" id="lora">1</span>
+            </div>            
 
             <!-- Number of Outputs -->
-            <label for="num_outputs">Number of images</label>
+            <label for="num_outputs">How many images?</label>
             <input type="number" id="num_outputs" name="num_outputs" min="1" max="5" value="1">
 
-            <!-- Aspect Ratio Dropdown -->
-            <label for="aspect_ratio">Aspect ratio</label>
+            <!-- Aspect Ratio -->
+            <label for="aspect_ratio">Choose an aspect ratio</label>
             <select id="aspect_ratio" name="aspect_ratio">
-                <option value="1:1">1:1 (Square)</option>
-                <option value="16:9">16:9 (Landscape)</option>
-                <option value="9:16">9:16 (Portrait)</option>
+                <option value="1:1" selected>1:1 (Square)</option>
+                <option value="16:9">16:9 (Wide)</option>
+                <option value="4:3">4:3 (Classic)</option>
             </select>
 
-            <!-- Guidance Scale Slider -->
+            <!-- Guidance Scale -->
+            <label for="guidance_scale">How much guidance?</label>
             <div class="slider-container">
-                <div class="slider-label">
-                    <span>How much guidance?</span>
-                    <span id="guidance-scale-value">3.0</span>
-                </div>
-                <input type="range" id="guidance_scale" name="guidance_scale" min="1" max="20" step="0.5" value="3.0" class="slider" oninput="updateSliderValue('guidance_scale', this.value)">
+                <input type="range" id="guidance_scale" name="guidance_scale" min="1.0" max="20.0" step="0.1" value="3.0" oninput="updateValue('guidance', this.value)">
+                <span class="slider-value" id="guidance">3.0</span>
+            </div>
+
+            <!-- Prompt Strength -->
+            <label for="prompt_strength">How strong is the prompt?</label>
+            <div class="slider-container">
+                <input type="range" id="prompt_strength" name="prompt_strength" min="0.0" max="1.0" step="0.1" value="0.8" oninput="updateValue('prompt_strength', this.value)">
+                <span class="slider-value" id="prompt_strength">0.8</span>
+            </div>
+
+            <!-- Number of Inference Steps -->
+            <label for="num_inference_steps">How many steps?</label>
+            <div class="slider-container">
+                <input type="range" id="num_inference_steps" name="num_inference_steps" min="1" max="100" value="28" oninput="updateValue('steps', this.value)">
+                <span class="slider-value" id="steps">28</span>
             </div>
 
             <!-- Submit Button -->
-            <button type="submit" class="button">Generate My Tweak!</button>
+            <button type="submit">Generate My Tweak!</button>
         </form>
     </div>
 
     <script>
-        function updateSliderValue(id, value) {
-            document.getElementById(`${id}-value`).textContent = value;
+        function updateValue(id, value) {
+            document.getElementById(id).innerText = value;
         }
     </script>
 </body>
