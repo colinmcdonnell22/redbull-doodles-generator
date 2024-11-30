@@ -1,10 +1,9 @@
 {
-  "name": "my-replicate-app",
+  "name": "tweak-generator",
   "version": "1.0.0",
   "private": true,
-  "description": "A starter for testing out Replicate's API",
-  "main": "index.js",
-  "type": "module",
+  "description": "A web app to generate AI images using the Tweak style with Replicate's API",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
