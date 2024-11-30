@@ -7,9 +7,16 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f7f8fa;
+            background-color: #fdfdfd;
             color: #333;
             margin: 0;
             display: flex;
@@ -19,84 +26,102 @@
         }
 
         .generator-container {
-            background: #fff;
-            padding: 40px;
+            max-width: 600px;
             width: 100%;
-            max-width: 500px;
-            border-radius: 15px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
+            background: #ffffff;
+            border: 1px solid #eaeaea;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.1);
+            text-align: left;
         }
 
         h1 {
-            font-size: 1.8rem;
+            font-size: 2rem;
             font-weight: 700;
             margin-bottom: 10px;
             color: #222;
+            letter-spacing: -0.02em;
         }
 
         p {
             font-size: 1rem;
             color: #555;
             margin-bottom: 20px;
+            line-height: 1.5;
         }
 
-        label {
+        form label {
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             display: block;
-            text-align: left;
+            font-size: 0.95rem;
             color: #333;
         }
 
         input, select {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             font-size: 1rem;
             margin-bottom: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-sizing: border-box;
+            border: 1px solid #eaeaea;
+            border-radius: 6px;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
         input:focus, select:focus {
             outline: none;
-            border-color: #6C63FF;
-            box-shadow: 0px 0px 4px rgba(108, 99, 255, 0.4);
+            border-color: #4f46e5;
+            box-shadow: 0px 0px 4px rgba(79, 70, 229, 0.5);
+        }
+
+        .slider-container {
+            margin-bottom: 20px;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: #333;
         }
 
         .slider {
             -webkit-appearance: none;
             width: 100%;
-            height: 10px;
-            border-radius: 5px;
+            height: 8px;
+            border-radius: 4px;
             background: #ddd;
             outline: none;
-            opacity: 0.9;
-            transition: opacity 0.2s;
-            margin-bottom: 20px;
+            transition: background-color 0.2s;
         }
 
         .slider:hover {
-            opacity: 1;
+            background-color: #ccc;
         }
 
         .slider::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
-            background: #6C63FF;
+            background: #4f46e5;
             cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            background: #3a37c7;
         }
 
         .button {
             display: inline-block;
             width: 100%;
-            background-color: #6C63FF;
+            background-color: #4f46e5;
             color: white;
-            padding: 15px 20px;
+            padding: 15px;
             text-align: center;
             font-size: 1rem;
             border: none;
@@ -108,34 +133,45 @@
         }
 
         .button:hover {
-            background-color: #5848d4;
+            background-color: #3a37c7;
             transform: translateY(-2px);
         }
 
         .button:active {
             transform: translateY(0);
         }
+
+        @media (max-width: 768px) {
+            .generator-container {
+                padding: 20px;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="generator-container">
         <h1>Tweak Generator</h1>
-        <p>Create your unique Tweak image! Fill out the details below.</p>
+        <p>Design your unique Tweak! Use the sliders and dropdowns to customize your creation. Let your imagination run wild!</p>
         <form action="/generate" method="POST">
             <!-- Prompt Input -->
-            <label for="prompt">What's your idea?</label>
-            <input type="text" id="prompt" name="prompt" placeholder="e.g., A frog in Tweak style" required>
+            <label for="prompt">Describe your Tweak</label>
+            <input type="text" id="prompt" name="prompt" placeholder="e.g., A futuristic robot in Tweak style" required>
 
             <!-- LoRA Scale Slider -->
-            <label for="lora_scale">How much LoRA magic?</label>
-            <input type="range" id="lora_scale" name="lora_scale" min="0" max="3" step="0.1" value="1" class="slider">
+            <div class="slider-container">
+                <div class="slider-label">
+                    <span>How much LoRA magic?</span>
+                    <span id="lora-scale-value">1</span>
+                </div>
+                <input type="range" id="lora_scale" name="lora_scale" min="0" max="3" step="0.1" value="1" class="slider" oninput="updateSliderValue('lora_scale', this.value)">
+            </div>
 
             <!-- Number of Outputs -->
-            <label for="num_outputs">How many images?</label>
+            <label for="num_outputs">Number of images</label>
             <input type="number" id="num_outputs" name="num_outputs" min="1" max="5" value="1">
 
             <!-- Aspect Ratio Dropdown -->
-            <label for="aspect_ratio">Choose an aspect ratio</label>
+            <label for="aspect_ratio">Aspect ratio</label>
             <select id="aspect_ratio" name="aspect_ratio">
                 <option value="1:1">1:1 (Square)</option>
                 <option value="16:9">16:9 (Landscape)</option>
@@ -143,20 +179,23 @@
             </select>
 
             <!-- Guidance Scale Slider -->
-            <label for="guidance_scale">How much guidance?</label>
-            <input type="range" id="guidance_scale" name="guidance_scale" min="1" max="20" step="0.5" value="3.0" class="slider">
-
-            <!-- Prompt Strength Slider -->
-            <label for="prompt_strength">How strong is the prompt?</label>
-            <input type="range" id="prompt_strength" name="prompt_strength" min="0" max="1" step="0.1" value="0.8" class="slider">
-
-            <!-- Steps Slider -->
-            <label for="num_inference_steps">How many steps?</label>
-            <input type="range" id="num_inference_steps" name="num_inference_steps" min="1" max="50" value="28" class="slider">
+            <div class="slider-container">
+                <div class="slider-label">
+                    <span>How much guidance?</span>
+                    <span id="guidance-scale-value">3.0</span>
+                </div>
+                <input type="range" id="guidance_scale" name="guidance_scale" min="1" max="20" step="0.5" value="3.0" class="slider" oninput="updateSliderValue('guidance_scale', this.value)">
+            </div>
 
             <!-- Submit Button -->
             <button type="submit" class="button">Generate My Tweak!</button>
         </form>
     </div>
+
+    <script>
+        function updateSliderValue(id, value) {
+            document.getElementById(`${id}-value`).textContent = value;
+        }
+    </script>
 </body>
 </html>
