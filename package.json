@@ -4,6 +4,7 @@
   "private": true,
   "description": "A web app to generate AI images using the Tweak style with Replicate's API",
   "main": "server.js",
+  "type": "module",
   "scripts": {
     "start": "node server.js"
   },
