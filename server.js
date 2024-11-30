@@ -1,12 +1,18 @@
 import express from "express"; // Import Express
 import bodyParser from "body-parser"; // Import Body-Parser for form parsing
 import Replicate from "replicate"; // Import Replicate API client
-
 import * as dotenv from "dotenv"; // Import dotenv for environment variables
+import path from "path";
+import { fileURLToPath } from "url";
+
 dotenv.config(); // Load environment variables from .env file
 
+// Get the current directory name (for resolving paths)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express(); // Initialize Express
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3000; // Use dynamic port from environment or fallback to 3000
 
 // Configure Replicate client
 const replicate = new Replicate({
@@ -14,6 +20,7 @@ const replicate = new Replicate({
 });
 
 // Middleware
+app.set("views", path.join(__dirname, "views")); // Explicitly set the views directory
 app.set("view engine", "ejs"); // Use EJS for templating
 app.use(express.static("public")); // Serve static files from the "public" folder
 app.use(bodyParser.urlencoded({ extended: true })); // Parse form data
