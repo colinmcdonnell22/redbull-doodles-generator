@@ -6,7 +6,7 @@ import * as dotenv from "dotenv"; // Import dotenv for environment variables
 dotenv.config(); // Load environment variables from .env file
 
 const app = express(); // Initialize Express
-const port = 3000; // Define the port to run the server
+const port = process.env.PORT || 3000;
 
 // Configure Replicate client
 const replicate = new Replicate({
