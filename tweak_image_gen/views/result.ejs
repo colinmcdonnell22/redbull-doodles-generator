@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generated Image</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: #fff;
+            border: 4px solid #333;
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 8px 8px 0 #000;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        img {
+            max-width: 100%;
+            border: 3px solid #333;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 1rem;
+            text-decoration: none;
+            background-color: #333;
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            text-transform: uppercase;
+        }
+
+        a:hover {
+            background-color: #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Your Generated Image</h1>
+        <p>Prompt: <strong><%= prompt %></strong></p>
+        <img src="<%= imageUrl %>" alt="Generated Image">
+        <a href="/">Generate Another Image</a>
+    </div>
+</body>
+</html>

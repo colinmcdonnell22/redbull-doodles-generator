@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tweak Generator</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: #fff;
+            border: 2px solid #ddd;
+            padding: 1.5rem;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: #444;
+            text-align: center;
+        }
+
+        p.subtitle {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        label {
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-bottom: 0.2rem;
+            color: #444;
+        }
+
+        input, select {
+            font-size: 0.9rem;
+            padding: 0.4rem 0.6rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            background: #ddd;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #444;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            background: #444;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .slider-value {
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: #444;
+        }
+
+        button {
+            background: linear-gradient(90deg, #6C63FF, #7A88FF);
+            color: #fff;
+            font-weight: bold;
+            font-size: 1rem;
+            text-transform: uppercase;
+            padding: 0.6rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: linear-gradient(90deg, #7A88FF, #6C63FF);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Tweak Generator</h1>
+        <p class="subtitle">Create your unique Tweak image! Fill out the details below.</p>
+        <form action="/generate" method="POST">
+            <!-- Prompt -->
+            <label for="prompt">What's your idea?</label>
+            <input type="text" id="prompt" name="prompt" placeholder="e.g., A frog in Tweak style" required>
+
+            <!-- LoRA Scale -->
+            <label for="lora_scale">How much LoRA magic?</label>
+            <div class="slider-container">
+                <input type="range" id="lora_scale" name="lora_scale" min="0" max="3" step="0.1" value="1" oninput="updateValue('lora', this.value)">
+                <span class="slider-value" id="lora">1</span>
+            </div>            
+
+            <!-- Number of Outputs -->
+            <label for="num_outputs">How many images?</label>
+            <input type="number" id="num_outputs" name="num_outputs" min="1" max="5" value="1">
+
+            <!-- Aspect Ratio -->
+            <label for="aspect_ratio">Choose an aspect ratio</label>
+            <select id="aspect_ratio" name="aspect_ratio">
+                <option value="1:1" selected>1:1 (Square)</option>
+                <option value="16:9">16:9 (Wide)</option>
+                <option value="4:3">4:3 (Classic)</option>
+            </select>
+
+            <!-- Guidance Scale -->
+            <label for="guidance_scale">How much guidance?</label>
+            <div class="slider-container">
+                <input type="range" id="guidance_scale" name="guidance_scale" min="1.0" max="20.0" step="0.1" value="3.0" oninput="updateValue('guidance', this.value)">
+                <span class="slider-value" id="guidance">3.0</span>
+            </div>
+
+            <!-- Prompt Strength -->
+            <label for="prompt_strength">How strong is the prompt?</label>
+            <div class="slider-container">
+                <input type="range" id="prompt_strength" name="prompt_strength" min="0.0" max="1.0" step="0.1" value="0.8" oninput="updateValue('prompt_strength', this.value)">
+                <span class="slider-value" id="prompt_strength">0.8</span>
+            </div>
+
+            <!-- Number of Inference Steps -->
+            <label for="num_inference_steps">How many steps?</label>
+            <div class="slider-container">
+                <input type="range" id="num_inference_steps" name="num_inference_steps" min="1" max="100" value="28" oninput="updateValue('steps', this.value)">
+                <span class="slider-value" id="steps">28</span>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit">Generate My Tweak!</button>
+        </form>
+    </div>
+
+    <script>
+        function updateValue(id, value) {
+            document.getElementById(id).innerText = value;
+        }
+    </script>
+</body>
+</html>
