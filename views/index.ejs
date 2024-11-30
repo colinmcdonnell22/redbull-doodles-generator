@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tweak Generator</title>
+    <title>Tweak Labs Generator</title>
     <style>
         /* General Styles */
         body {
@@ -127,15 +127,15 @@
 </head>
 <body>
     <div class="container">
-        <h1>Tweak Generator</h1>
-        <p class="subtitle">Create your unique Tweak image! Fill out the details below.</p>
+        <h1>Tweak Labs Generator</h1>
+        <p class="subtitle">Create an image in the signature tweak style</p>
         <form action="/generate" method="POST">
             <!-- Prompt -->
             <label for="prompt">What's your idea?</label>
-            <input type="text" id="prompt" name="prompt" placeholder="e.g., A frog in Tweak style" required>
+            <input type="text" id="prompt" name="prompt" placeholder="e.g., A frog jumping on a lily pad" required>
 
             <!-- LoRA Scale -->
-            <label for="lora_scale">How much LoRA magic?</label>
+            <label for="lora_scale">AI Magic</label>
             <div class="slider-container">
                 <input type="range" id="lora_scale" name="lora_scale" min="0" max="3" step="0.1" value="1" oninput="updateValue('lora', this.value)">
                 <span class="slider-value" id="lora">1</span>
@@ -146,7 +146,7 @@
             <input type="number" id="num_outputs" name="num_outputs" min="1" max="5" value="1">
 
             <!-- Aspect Ratio -->
-            <label for="aspect_ratio">Choose an aspect ratio</label>
+            <label for="aspect_ratio">Aspect ratio</label>
             <select id="aspect_ratio" name="aspect_ratio">
                 <option value="1:1" selected>1:1 (Square)</option>
                 <option value="16:9">16:9 (Wide)</option>
@@ -154,28 +154,28 @@
             </select>
 
             <!-- Guidance Scale -->
-            <label for="guidance_scale">How much guidance?</label>
+            <label for="guidance_scale">Guidance</label>
             <div class="slider-container">
                 <input type="range" id="guidance_scale" name="guidance_scale" min="1.0" max="20.0" step="0.1" value="3.0" oninput="updateValue('guidance', this.value)">
                 <span class="slider-value" id="guidance">3.0</span>
             </div>
 
             <!-- Prompt Strength -->
-            <label for="prompt_strength">How strong is the prompt?</label>
+            <label for="prompt_strength">Prompt Strength</label>
             <div class="slider-container">
                 <input type="range" id="prompt_strength" name="prompt_strength" min="0.0" max="1.0" step="0.1" value="0.8" oninput="updateValue('prompt_strength', this.value)">
                 <span class="slider-value" id="prompt_strength">0.8</span>
             </div>
 
             <!-- Number of Inference Steps -->
-            <label for="num_inference_steps">How many steps?</label>
+            <label for="num_inference_steps">Training Steps</label>
             <div class="slider-container">
                 <input type="range" id="num_inference_steps" name="num_inference_steps" min="1" max="100" value="28" oninput="updateValue('steps', this.value)">
                 <span class="slider-value" id="steps">28</span>
             </div>
 
             <!-- Submit Button -->
-            <button type="submit">Generate My Tweak!</button>
+            <button type="submit">Generate</button>
         </form>
     </div>
 

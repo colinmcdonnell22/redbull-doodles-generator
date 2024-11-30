@@ -36,7 +36,7 @@ const ensureTweakInPrompt = (prompt) => {
     }
 
     // Add "in tweak style" to the prompt if not present
-    return `${prompt} in tweak style`;
+    return `${prompt} <tweaks>`;
 };
 
 // Serve the form page
