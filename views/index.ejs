@@ -11,12 +11,12 @@
             background: linear-gradient(135deg, #070707, #282828);
             color: #f0f0f0;
             margin: 0;
-            padding: 1rem; /* Add padding to edges for a cleaner look */
+            padding: 1rem;
             display: flex;
             justify-content: center;
             align-items: flex-start;
             min-height: 100vh;
-            overflow-y: auto; /* Allow scrolling if needed */
+            overflow-y: auto;
         }
 
         .container {
@@ -24,14 +24,14 @@
             border: 2px solid #f0f0f0;
             padding: 1rem;
             border-radius: 8px;
-            max-width: 360px; /* Adjusted for mobile screens */
+            max-width: 400px;
             width: 100%;
             box-shadow: 6px 6px 0px #101010;
             text-align: center;
         }
 
         h1 {
-            font-size: 1.4rem; /* Smaller for mobile */
+            font-size: 1.4rem; /* Slightly smaller title */
             margin-bottom: 0.5rem;
             color: #fff;
             text-shadow: 2px 2px 0px #101010;
@@ -56,18 +56,23 @@
             text-align: left;
         }
 
-        input[type="text"] {
-            font-size: 0.8rem; /* Reduced font size for mobile */
-            padding: 0.3rem 0.5rem;
+        textarea {
+            font-size: 0.85rem;
+            padding: 0.5rem;
             border: 1px solid #f0f0f0;
             border-radius: 4px;
             width: 100%;
             background: #070707;
             color: #f0f0f0;
-            margin-bottom: 1rem;
+            resize: none; /* Prevent manual resizing */
+            overflow-y: hidden; /* Hide vertical scrollbar */
         }
 
-        input[type="text"]::placeholder {
+        textarea:focus {
+            outline: none;
+        }
+
+        textarea::placeholder {
             color: #a9a9a9;
         }
 
@@ -75,14 +80,15 @@
             font-family: 'Courier New', monospace;
             background-color: #f0f0f0;
             color: #000;
-            font-size: 0.8rem; /* Adjusted for mobile */
-            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            padding: 0.6rem 1rem;
             border: 2px solid #000;
             border-radius: 4px;
             cursor: pointer;
             text-transform: uppercase;
             box-shadow: 4px 4px 0px #101010;
             transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 0.8rem;
         }
 
         button:hover {
@@ -180,7 +186,7 @@
             
             <!-- Prompt Input -->
             <label for="prompt">What do you dream?</label>
-            <input type="text" id="prompt" name="prompt" placeholder="i dream of a sweet motorcycle..." required>
+            <textarea id="prompt" name="prompt" placeholder="i dream of a sweet motorcycle..." rows="2" required></textarea>
 
             <!-- Tweak Settings Toggle -->
             <div class="toggle-settings" onclick="toggleSettings()">Tweak Settings ↓</div>
@@ -226,6 +232,13 @@
             const settings = document.getElementById("settings-container");
             settings.style.display = settings.style.display === "block" ? "none" : "block";
         }
+
+        // Adjust the textarea height dynamically
+        const textarea = document.getElementById('prompt');
+        textarea.addEventListener('input', () => {
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+        });
     </script>
 </body>
 </html>
