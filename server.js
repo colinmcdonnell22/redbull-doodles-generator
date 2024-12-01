@@ -30,11 +30,6 @@ const ensureTweakInPrompt = (prompt) => {
     const tweakVariations = ["tweak style", "tweaks style", "in tweak style", "in tweaks style"];
     const lowerPrompt = prompt.toLowerCase();
 
-    // Check if "tweak" is already in the prompt
-    if (lowerPrompt.includes("tweak")) {
-        return prompt; // Return the prompt as is
-    }
-
     // Add "in tweak style" to the prompt if not present
     return `${prompt} <tweaks>`;
 };
@@ -49,7 +44,6 @@ app.post("/generate", async (req, res) => {
     const {
         prompt,
         lora_scale,
-        num_outputs,
         aspect_ratio,
         guidance_scale,
         prompt_strength,
@@ -70,7 +64,7 @@ app.post("/generate", async (req, res) => {
                     lora_scale: Math.min(parseFloat(lora_scale), 3), // Ensure lora_scale does not exceed 3
                     extra_lora_scale: 1, // Fixed value
                     megapixels: "1", // Fixed value
-                    num_outputs: parseInt(num_outputs),
+                    num_outputs: 1, // Fixed to always generate 1 output
                     aspect_ratio,
                     output_format: "png", // Fixed value
                     guidance_scale: parseFloat(guidance_scale),
