@@ -5,93 +5,115 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>I Dream of Electric Tweaks</title>
     <style>
+        /* General Styles */
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f9f9f9;
-            color: #333;
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #070707, #282828);
+            color: #f0f0f0;
             margin: 0;
-            padding: 0;
+            padding: 2rem 0; /* Added padding for top and bottom spacing */
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start; /* Start items at the top, leaving space at the bottom */
             min-height: 100vh;
+            overflow-y: auto; /* Allow vertical scrolling if needed */
         }
 
         .container {
-            background: #fff;
-            border: 2px solid #ddd;
-            padding: 1.5rem;
+            background: linear-gradient(135deg, #1c1c1c, #3a3a3a);
+            border: 2px solid #f0f0f0;
+            padding: 1rem;
             border-radius: 8px;
-            max-width: 600px;
-            width: 100%;
-            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 6px 6px 0px #101010;
+            text-align: center;
+            position: relative;
         }
 
         h1 {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             margin-bottom: 0.5rem;
-            color: #444;
-            text-align: center;
+            color: #fff;
+            text-shadow: 2px 2px 0px #101010;
         }
 
         img {
             display: block;
             width: 100%;
             height: auto;
-            margin-bottom: 1rem;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #eee;
+            margin-bottom: 0.5rem;
+            border: 2px solid #f0f0f0;
+            border-radius: 6px;
+            box-shadow: 3px 3px 0px #000;
         }
 
         label {
             font-weight: bold;
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            margin-bottom: 0.3rem;
             display: block;
-            color: #444;
+            color: #f0f0f0;
+            text-align: left;
         }
 
         input[type="text"] {
-            font-size: 1rem;
-            padding: 0.4rem 0.6rem;
-            border: 1px solid #ddd;
+            font-size: 0.85rem;
+            padding: 0.3rem 0.5rem;
+            border: 1px solid #f0f0f0;
             border-radius: 4px;
             width: 100%;
+            background: #070707;
+            color: #f0f0f0;
+        }
+
+        input[type="text"]::placeholder {
+            color: #a9a9a9;
         }
 
         button {
-            background: #007bff;
-            color: white;
-            font-size: 1rem;
-            padding: 0.6rem;
-            border: none;
-            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            background-color: #f0f0f0;
+            color: #000;
+            font-size: 0.9rem;
+            padding: 0.6rem 1rem;
+            border: 2px solid #000;
+            border-radius: 4px;
             cursor: pointer;
-            width: 100%;
-            margin-top: 1rem;
+            text-transform: uppercase;
+            box-shadow: 4px 4px 0px #101010;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 0.8rem;
         }
 
         button:hover {
-            background: #0056b3;
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px #101010;
+        }
+
+        button:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px #101010;
         }
 
         .toggle-settings {
-            font-size: 0.9rem;
-            margin: 1rem 0;
-            text-align: center;
+            font-size: 0.85rem;
+            margin-top: 0.8rem;
+            margin-bottom: 0.5rem;
+            color: #f0f0f0;
             cursor: pointer;
-            color: #007bff;
             text-decoration: underline;
+            text-align: right;
         }
 
         .settings {
             display: none;
-            margin-top: 1rem;
+            margin-top: 0.5rem;
+            text-align: left;
         }
 
         .slider-container {
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
         }
 
         .slider-container label {
@@ -101,14 +123,62 @@
 
         input[type="range"] {
             width: 100%;
+            accent-color: #f0f0f0;
+        }
+
+        .slider-container span {
+            font-size: 0.75rem;
+            color: #f0f0f0;
+        }
+
+        /* Add some trippy floating elements */
+        .floating-circle {
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, #3a3a3a, #1c1c1c);
+            position: absolute;
+            border-radius: 50%;
+            animation: float 8s infinite ease-in-out;
+        }
+
+        .floating-circle:nth-child(1) {
+            top: -20px;
+            left: 20%;
+            animation-delay: 0s;
+        }
+
+        .floating-circle:nth-child(2) {
+            bottom: 20px;
+            right: 30%;
+            animation-delay: 2s;
+        }
+
+        .floating-circle:nth-child(3) {
+            top: 30%;
+            right: 10%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-15px);
+            }
         }
     </style>
 </head>
 <body>
+    <div class="floating-circle"></div>
+    <div class="floating-circle"></div>
+    <div class="floating-circle"></div>
+
     <div class="container">
-        <h1>I Dream of Electric Tweaks...</h1>
+        <h1>I Dream of Electric Tweaks</h1>
         <form action="/generate" method="POST">
-            <img src="../sheeps.png" alt="Generated Image Placeholder" id="image-preview">
+            <img src="/sheeps.png" alt="Generated Image Placeholder" id="image-preview">
+            
             <!-- Prompt Input -->
             <label for="prompt">What do you dream?</label>
             <input type="text" id="prompt" name="prompt" placeholder="e.g., A tweak flying high in the sky..." required>

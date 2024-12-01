@@ -3,70 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generated Image</title>
+    <title>Your Electric Tweak</title>
     <style>
+        /* General Styles */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-            color: #333;
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #070707, #282828);
+            color: #f0f0f0;
             margin: 0;
-            padding: 0;
+            padding: 2rem 0;
             display: flex;
             justify-content: center;
-            align-items: center;
-            height: 100vh;
+            align-items: flex-start;
+            min-height: 100vh;
+            overflow-y: auto;
         }
 
         .container {
-            background: #fff;
-            border: 4px solid #333;
-            padding: 2rem;
-            border-radius: 10px;
-            max-width: 800px;
-            width: 100%;
+            background: linear-gradient(135deg, #1c1c1c, #3a3a3a);
+            border: 2px solid #f0f0f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 6px 6px 0px #101010;
             text-align: center;
-            box-shadow: 8px 8px 0 #000;
+            position: relative;
         }
 
         h1 {
-            font-size: 2.5rem;
+            font-size: 1.6rem;
             margin-bottom: 1rem;
+            color: #fff;
+            text-shadow: 2px 2px 0px #101010;
         }
 
         img {
-            max-width: 100%;
-            border: 3px solid #333;
-            border-radius: 10px;
+            display: block;
+            width: 100%;
+            height: auto;
             margin-bottom: 1rem;
+            border: 2px solid #f0f0f0;
+            border-radius: 6px;
+            box-shadow: 4px 4px 0px #000;
         }
 
         p {
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
+            font-size: 1rem;
+            margin-bottom: 1.2rem;
+            color: #f0f0f0;
+        }
+
+        strong {
+            color: #fff;
+            text-shadow: 1px 1px 0px #101010;
         }
 
         a {
-            display: inline-block;
-            margin-top: 1rem;
-            text-decoration: none;
-            background-color: #333;
-            color: #fff;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            background-color: #f0f0f0;
+            color: #000;
+            font-size: 0.9rem;
+            padding: 0.6rem 1rem;
+            border: 2px solid #000;
+            border-radius: 4px;
+            cursor: pointer;
             text-transform: uppercase;
+            text-decoration: none;
+            box-shadow: 4px 4px 0px #101010;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-block;
         }
 
         a:hover {
-            background-color: #000;
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px #101010;
+        }
+
+        a:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px #101010;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Your Generated Image</h1>
+        <h1>Your Electric Tweak</h1>
         <p>Prompt: <strong><%= prompt %></strong></p>
         <img src="<%= imageUrl %>" alt="Generated Image">
-        <a href="/">Generate Another Image</a>
+        <a href="/">Generate Another Tweak</a>
     </div>
 </body>
 </html>
