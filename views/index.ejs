@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>I Dream of Electric Tweaks</title>
     <style>
         /* General Styles */
@@ -11,12 +11,12 @@
             background: linear-gradient(135deg, #070707, #282828);
             color: #f0f0f0;
             margin: 0;
-            padding: 2rem 0; /* Added padding for top and bottom spacing */
+            padding: 1rem; /* Add padding to edges for a cleaner look */
             display: flex;
             justify-content: center;
-            align-items: flex-start; /* Start items at the top, leaving space at the bottom */
+            align-items: flex-start;
             min-height: 100vh;
-            overflow-y: auto; /* Allow vertical scrolling if needed */
+            overflow-y: auto; /* Allow scrolling if needed */
         }
 
         .container {
@@ -24,15 +24,14 @@
             border: 2px solid #f0f0f0;
             padding: 1rem;
             border-radius: 8px;
-            max-width: 400px;
-            width: 90%;
+            max-width: 360px; /* Adjusted for mobile screens */
+            width: 100%;
             box-shadow: 6px 6px 0px #101010;
             text-align: center;
-            position: relative;
         }
 
         h1 {
-            font-size: 1.6rem;
+            font-size: 1.4rem; /* Smaller for mobile */
             margin-bottom: 0.5rem;
             color: #fff;
             text-shadow: 2px 2px 0px #101010;
@@ -50,7 +49,7 @@
 
         label {
             font-weight: bold;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             margin-bottom: 0.3rem;
             display: block;
             color: #f0f0f0;
@@ -58,13 +57,14 @@
         }
 
         input[type="text"] {
-            font-size: 0.85rem;
+            font-size: 0.8rem; /* Reduced font size for mobile */
             padding: 0.3rem 0.5rem;
             border: 1px solid #f0f0f0;
             border-radius: 4px;
             width: 100%;
             background: #070707;
             color: #f0f0f0;
+            margin-bottom: 1rem;
         }
 
         input[type="text"]::placeholder {
@@ -75,15 +75,14 @@
             font-family: 'Courier New', monospace;
             background-color: #f0f0f0;
             color: #000;
-            font-size: 0.9rem;
-            padding: 0.6rem 1rem;
+            font-size: 0.8rem; /* Adjusted for mobile */
+            padding: 0.5rem 1rem;
             border: 2px solid #000;
             border-radius: 4px;
             cursor: pointer;
             text-transform: uppercase;
             box-shadow: 4px 4px 0px #101010;
             transition: transform 0.2s, box-shadow 0.2s;
-            margin-top: 0.8rem;
         }
 
         button:hover {
@@ -97,8 +96,8 @@
         }
 
         .toggle-settings {
-            font-size: 0.85rem;
-            margin-top: 0.8rem;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
             margin-bottom: 0.5rem;
             color: #f0f0f0;
             cursor: pointer;
