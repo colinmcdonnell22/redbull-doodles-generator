@@ -4,7 +4,6 @@ import Replicate from "replicate"; // Import Replicate API client
 import * as dotenv from "dotenv"; // Import dotenv for environment variables
 import path from "path";
 import { fileURLToPath } from "url";
-import { Analytics } from '@vercel/analytics/next';
 
 dotenv.config(); // Load environment variables from .env file
 
