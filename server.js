@@ -27,10 +27,14 @@ app.use(bodyParser.urlencoded({ extended: true })); // Parse form data
 
 // Function to ensure "tweak" is in the prompt
 const ensureTweakInPrompt = (prompt) => {
-    const tweakVariations = ["tweak style", "tweaks style", "in tweak style", "in tweaks style"];
     const lowerPrompt = prompt.toLowerCase();
 
-    // Add "in tweak style" to the prompt if not present
+    // Check if "tweak" is already in the prompt
+    if (lowerPrompt.includes("tweak")) {
+        return prompt; // Return the prompt as is
+    }
+
+    // Add "<tweaks>" to the prompt if not present
     return `${prompt} <tweaks>`;
 };
 
@@ -42,7 +46,7 @@ app.get("/", (req, res) => {
 // Handle form submission and generate the image
 app.post("/generate", async (req, res) => {
     const {
-        prompt,
+        prompt, // User input
         lora_scale,
         aspect_ratio,
         guidance_scale,
@@ -51,7 +55,7 @@ app.post("/generate", async (req, res) => {
     } = req.body;
 
     try {
-        // Ensure "tweak" is in the prompt
+        // Ensure "<tweaks>" is appended internally
         const modifiedPrompt = ensureTweakInPrompt(prompt);
 
         const prediction = await replicate.run(
@@ -59,7 +63,7 @@ app.post("/generate", async (req, res) => {
             {
                 input: {
                     model: "dev", // Fixed value
-                    prompt: modifiedPrompt,
+                    prompt: modifiedPrompt, // Backend uses the modified prompt
                     go_fast: true, // Fixed value
                     lora_scale: Math.min(parseFloat(lora_scale), 3), // Ensure lora_scale does not exceed 3
                     extra_lora_scale: 1, // Fixed value
@@ -76,7 +80,9 @@ app.post("/generate", async (req, res) => {
         );
 
         const imageUrl = prediction; // The output is the image URL
-        res.render("result", { imageUrl, prompt: modifiedPrompt }); // Render the result page with the modified prompt
+
+        // Pass original prompt (without <tweaks>) to the results page
+        res.render("result", { imageUrl, prompt }); 
     } catch (error) {
         console.error("Error generating image:", error);
         res.status(500).send("Something went wrong!");
