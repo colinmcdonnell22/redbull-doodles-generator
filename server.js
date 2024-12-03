@@ -35,7 +35,7 @@ const ensureTweakInPrompt = (prompt) => {
     }
 
     // Add "<tweaks>" to the prompt if not present
-    return `${prompt} <with the higher arrow>`;
+    return `${prompt} <tweaks>`;
 };
 
 // Serve the form page
@@ -59,7 +59,7 @@ app.post("/generate", async (req, res) => {
         const modifiedPrompt = ensureTweakInPrompt(prompt);
 
         const prediction = await replicate.run(
-            "colinmcdonnell22/higher_images:8488b409e805a12478bb40489b99a9c9fde7a00c331b07ee07ad4859b5633eef",
+            "colinmcdonnell22/050md_ai:ffe5df4d14346fa97383cdcec0ec90ecd29b4146c34e663434ea10b1bf2af60d",
             {
                 input: {
                     model: "dev", // Fixed value
