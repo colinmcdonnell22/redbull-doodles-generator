@@ -3,224 +3,218 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>I Dream of Electric Tweaks</title>
+    <title>Higher - AI Image Generation</title>
     <style>
         /* General Styles */
         body {
-            font-family: 'Courier New', monospace;
-            background: linear-gradient(135deg, #070707, #282828);
-            color: #f0f0f0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(-45deg, #f0f7f0, #e0f2e0, #d0edd0, #f5f9f5);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #1a1a1a;
             margin: 0;
-            padding: 1rem;
+            padding: 2rem;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-            overflow-y: auto;
+            align-items: center;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .container {
-            background: linear-gradient(135deg, #1c1c1c, #3a3a3a);
-            border: 2px solid #f0f0f0;
-            padding: 1rem;
-            border-radius: 8px;
-            max-width: 400px;
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 500px;
             width: 100%;
-            box-shadow: 6px 6px 0px #101010;
-            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
-            font-size: 1.3rem; /* Slightly smaller title */
-            margin-bottom: 0.5rem;
-            color: #fff;
-            text-shadow: 2px 2px 0px #101010;
+            font-size: 2rem;
+            margin: 0 0 1.5rem 0;
+            color: #15803d;
+            font-weight: 700;
+            text-align: center;
         }
 
-        img {
-            display: block;
-            width: 100%;
-            height: auto;
-            margin-bottom: 0.5rem;
-            border: 2px solid #f0f0f0;
-            border-radius: 6px;
-            box-shadow: 3px 3px 0px #000;
+        .subtitle {
+            text-align: center;
+            color: #4b5563;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
         }
 
         label {
-            font-weight: bold;
-            font-size: 0.8rem;
-            margin-bottom: 0.3rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #374151;
             display: block;
-            color: #f0f0f0;
-            text-align: left;
+            margin-bottom: 0.5rem;
         }
 
         textarea {
-            font-size: 0.85rem;
-            padding: 0.5rem;
-            border: 1px solid #f0f0f0;
-            border-radius: 4px;
-            width: calc(100% - 4px); /* Adjusted width to align with the image */
-            background: #070707;
-            color: #f0f0f0;
-            resize: none; /* Prevent manual resizing */
-            overflow-y: hidden; /* Hide vertical scrollbar */
-            box-sizing: border-box; /* Include border and padding in width calculation */
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            background: #f9fafb;
+            font-size: 1rem;
+            color: #1f2937;
+            min-height: 80px;
+            resize: vertical;
+            font-family: inherit;
+            box-sizing: border-box;
         }
 
         textarea:focus {
             outline: none;
+            border-color: #15803d;
+            box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.1);
         }
 
-        textarea::placeholder {
-            color: #a9a9a9;
-        }
-
-        button {
-            font-family: 'Courier New', monospace;
-            background-color: #f0f0f0;
-            color: #000;
+        .settings-toggle {
+            color: #15803d;
+            background: none;
+            border: none;
+            padding: 0.5rem;
             font-size: 0.9rem;
-            padding: 0.6rem 1rem;
-            border: 2px solid #000;
-            border-radius: 4px;
             cursor: pointer;
-            text-transform: uppercase;
-            box-shadow: 4px 4px 0px #101010;
-            transition: transform 0.2s, box-shadow 0.2s;
-            margin-top: 0.8rem;
-        }
-
-        button:hover {
-            transform: translate(-2px, -2px);
-            box-shadow: 6px 6px 0px #101010;
-        }
-
-        button:active {
-            transform: translate(2px, 2px);
-            box-shadow: 2px 2px 0px #101010;
-        }
-
-        .toggle-settings {
-            font-size: 0.8rem;
-            margin-top: 0.5rem;
-            margin-bottom: 0.5rem;
-            color: #f0f0f0;
-            cursor: pointer;
-            text-decoration: underline;
-            text-align: right;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0 auto;
         }
 
         .settings {
             display: none;
-            margin-top: 0.5rem;
-            text-align: left;
+            background: #f0f7f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
         }
 
         .slider-container {
+            margin-bottom: 1.5rem;
+        }
+
+        .slider-container:last-child {
+            margin-bottom: 0;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 0.5rem;
         }
 
-        .slider-container label {
-            display: flex;
-            justify-content: space-between;
+        .slider-value {
+            color: #15803d;
+            font-weight: 600;
         }
 
         input[type="range"] {
             width: 100%;
-            accent-color: #f0f0f0;
+            accent-color: #15803d;
         }
 
-        .slider-container span {
-            font-size: 0.75rem;
-            color: #f0f0f0;
+        button[type="submit"] {
+            background-color: #15803d;
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.2s;
         }
 
-        /* Add some trippy floating elements */
-        .floating-circle {
-            width: 80px;
-            height: 80px;
-            background: radial-gradient(circle, #3a3a3a, #1c1c1c);
-            position: absolute;
-            border-radius: 50%;
-            animation: float 8s infinite ease-in-out;
+        button[type="submit"]:hover {
+            background-color: #166534;
+            transform: translateY(-1px);
         }
 
-        .floating-circle:nth-child(1) {
-            top: -20px;
-            left: 20%;
-            animation-delay: 0s;
-        }
-
-        .floating-circle:nth-child(2) {
-            bottom: 20px;
-            right: 30%;
-            animation-delay: 2s;
-        }
-
-        .floating-circle:nth-child(3) {
-            top: 30%;
-            right: 10%;
-            animation-delay: 4s;
-        }
-
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-15px);
-            }
+        button[type="submit"]:active {
+            transform: translateY(1px);
         }
     </style>
 </head>
 <body>
-    <div class="floating-circle"></div>
-    <div class="floating-circle"></div>
-    <div class="floating-circle"></div>
-
     <div class="container">
-        <h1>I Dream of Electric Tweaks</h1>
+        <h1>Higher</h1>
+        <p class="subtitle">Transform your ideas into stunning images</p>
+        
         <form action="/generate" method="POST">
-            <img src="https://res.cloudinary.com/dvz9gbvc9/image/upload/v1733043230/motorcycle_tweak_ewka3n.png" alt="Generated Image Placeholder" id="image-preview">
-            
-            <!-- Prompt Input -->
-            <label for="prompt">What do you dream?</label>
-            <textarea id="prompt" name="prompt" placeholder="i dream of a sweet motorcycle..." rows="2" required></textarea>
+            <div>
+                <label for="prompt">What would you like to create?</label>
+                <textarea 
+                    id="prompt" 
+                    name="prompt" 
+                    placeholder="Describe your vision..."
+                    required></textarea>
+            </div>
 
-            <!-- Tweak Settings Toggle -->
-            <div class="toggle-settings" onclick="toggleSettings()">Tweak Settings ↓</div>
+            <button type="button" class="settings-toggle" onclick="toggleSettings()">
+                Advanced Settings ↓
+            </button>
 
-            <!-- Tweak Settings -->
-            <div class="settings" id="settings-container">
-                <!-- LoRA Scale -->
+            <div id="settings-container" class="settings">
                 <div class="slider-container">
-                    <label for="lora_scale">AI Magic: <span id="lora_value">1.0</span></label>
-                    <input type="range" id="lora_scale" name="lora_scale" min="0" max="3" step="0.1" value="1" oninput="updateValue('lora_value', this.value)">
+                    <div class="slider-label">
+                        <label for="lora_scale">Creative Freedom</label>
+                        <span class="slider-value" id="lora_value">1.0</span>
+                    </div>
+                    <input type="range" id="lora_scale" name="lora_scale" 
+                           min="0" max="3" step="0.1" value="1" 
+                           oninput="updateValue('lora_value', this.value)">
                 </div>
 
-                <!-- Guidance Scale -->
                 <div class="slider-container">
-                    <label for="guidance_scale">Guidance: <span id="guidance_value">3.0</span></label>
-                    <input type="range" id="guidance_scale" name="guidance_scale" min="1.0" max="20.0" step="0.1" value="3.0" oninput="updateValue('guidance_value', this.value)">
+                    <div class="slider-label">
+                        <label for="guidance_scale">Style Adherence</label>
+                        <span class="slider-value" id="guidance_value">3.0</span>
+                    </div>
+                    <input type="range" id="guidance_scale" name="guidance_scale" 
+                           min="1.0" max="20.0" step="0.1" value="3.0" 
+                           oninput="updateValue('guidance_value', this.value)">
                 </div>
 
-                <!-- Prompt Strength -->
                 <div class="slider-container">
-                    <label for="prompt_strength">Strength: <span id="strength_value">0.8</span></label>
-                    <input type="range" id="prompt_strength" name="prompt_strength" min="0.0" max="1.0" step="0.1" value="0.8" oninput="updateValue('strength_value', this.value)">
+                    <div class="slider-label">
+                        <label for="prompt_strength">Impact Level</label>
+                        <span class="slider-value" id="strength_value">0.8</span>
+                    </div>
+                    <input type="range" id="prompt_strength" name="prompt_strength" 
+                           min="0.0" max="1.0" step="0.1" value="0.8" 
+                           oninput="updateValue('strength_value', this.value)">
                 </div>
 
-                <!-- Inference Steps -->
                 <div class="slider-container">
-                    <label for="num_inference_steps">Test Steps: <span id="steps_value">28</span></label>
-                    <input type="range" id="num_inference_steps" name="num_inference_steps" min="1" max="100" step="1" value="28" oninput="updateValue('steps_value', this.value)">
+                    <div class="slider-label">
+                        <label for="num_inference_steps">Quality Level</label>
+                        <span class="slider-value" id="steps_value">28</span>
+                    </div>
+                    <input type="range" id="num_inference_steps" name="num_inference_steps" 
+                           min="1" max="100" step="1" value="28" 
+                           oninput="updateValue('steps_value', this.value)">
                 </div>
             </div>
 
-            <!-- Submit Button -->
-            <button type="submit">Generate</button>
+            <button type="submit">Generate Image</button>
         </form>
     </div>
 
@@ -233,17 +227,6 @@
             const settings = document.getElementById("settings-container");
             settings.style.display = settings.style.display === "block" ? "none" : "block";
         }
-
-        // Adjust the textarea height dynamically
-        const textarea = document.getElementById('prompt');
-        textarea.addEventListener('input', () => {
-            textarea.style.height = 'auto';
-            textarea.style.height = textarea.scrollHeight + 'px';
-        });
     </script>
-    <script>
-        window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-      </script>
-    <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>

@@ -1,19 +1,9 @@
-# my-replicate-app
+# Higher Image Generator
 
-This is a scaffoled Node.js project structure for running AI models with [Replicate's API](https://replicate.com/docs/get-started/nodejs).
+An AI-powered image generation web application using Replicate's API.
 
-## Usage
+## Setup
 
-To get started, you'll need Node.js 18 or later. The simplest way to install it is using the installer at [nodejs.org](https://nodejs.org/).
-
-Next, grab a Replicate API token from [replicate.com/account](http://replicate.com/account) and set it as an environment variable:
-
-```console
-export REPLICATE_API_TOKEN=...
-```
-
-Then run your app:
-
-```console
-npm start
-```
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Create a `.env` file and add your Replicate API key:
