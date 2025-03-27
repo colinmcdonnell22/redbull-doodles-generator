@@ -183,6 +183,11 @@
             <!-- Prompt Display -->
             <div class="prompt-display">
                 <p><strong>Your prompt:</strong> <%= prompt %></p>
+                <% if (typeof isImageToImage !== 'undefined' && isImageToImage) { %>
+                    <p><small><em>Generated using your uploaded image</em></small></p>
+                <% } else { %>
+                    <p><small><em>Generated from text prompt only</em></small></p>
+                <% } %>
             </div>
             
             <!-- Prompt Input -->

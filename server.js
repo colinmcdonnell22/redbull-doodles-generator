@@ -4,6 +4,8 @@ import Replicate from "replicate"; // Import Replicate API client
 import * as dotenv from "dotenv"; // Import dotenv for environment variables
 import path from "path";
 import { fileURLToPath } from "url";
+import multer from "multer"; // For handling multipart/form-data (file uploads)
+import fs from "fs";
 
 dotenv.config(); // Load environment variables from .env file
 
@@ -26,6 +28,25 @@ console.log("Environment setup:", {
 // Configure Replicate client
 const replicate = new Replicate({
     auth: process.env.REPLICATE_API_TOKEN, // Use API token from .env file
+});
+
+// Set up multer for file uploads
+// Configure storage for uploads
+const storage = multer.memoryStorage(); // Store files in memory
+
+// Set up the multer middleware with file size limits
+const upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 4 * 1024 * 1024, // 4MB max file size
+    },
+    fileFilter: function (req, file, cb) {
+        // Accept only image files
+        if (!file.originalname.match(/\.(jpg|jpeg|png|webp)$/i)) {
+            return cb(new Error('Only JPG, PNG, and WEBP image files are allowed!'), false);
+        }
+        cb(null, true);
+    }
 });
 
 // Middleware
@@ -96,12 +117,12 @@ app.get("/api-check", async (req, res) => {
 });
 
 // Handle form submission and generate the image
-app.post("/generate", async (req, res) => {
+app.post("/generate", upload.single('image'), async (req, res) => {
     console.log("Received form submission:", {
         hasBody: !!req.body,
         contentType: req.get('Content-Type'),
         bodyKeys: req.body ? Object.keys(req.body) : [],
-        bodyValues: JSON.stringify(req.body)
+        hasFile: !!req.file
     });
 
     // Validate request body
@@ -125,20 +146,36 @@ app.post("/generate", async (req, res) => {
     try {
         // Modify the prompt to include "in DOODL style" if needed
         const modifiedPrompt = ensureTweakInPrompt(prompt);
+        
+        // Create input object for Replicate API
+        const input = {
+            prompt: modifiedPrompt,
+            guidance_scale: parseFloat(guidance_scale) || 7.0,
+            num_inference_steps: parseInt(num_inference_steps) || 30,
+        };
+        
+        // If we have an uploaded image file, include it in the input
+        if (req.file) {
+            console.log("Processing uploaded image:", req.file.originalname);
+            
+            // Convert the uploaded image buffer to base64
+            const base64Image = req.file.buffer.toString('base64');
+            
+            // Add the image to the input with the correct data URL format
+            const fileType = req.file.mimetype;
+            input.image = `data:${fileType};base64,${base64Image}`;
+            
+            console.log("Added image to API input (image-to-image mode)");
+        } else {
+            console.log("No image uploaded, using text-to-image mode");
+        }
 
         console.log("Sending request to Replicate with prompt:", modifiedPrompt);
         
         // Use the exact model version from the API docs
         const prediction = await replicate.run(
             "colinmcdonnell22/redbull_doodles:14c616496f87e094a49107a67ef5b7221c25c8bbee980913cbd24e59ff3c2591",
-            {
-                input: {
-                    prompt: modifiedPrompt,
-                    // Only include parameters if they're actually used by the model
-                    guidance_scale: parseFloat(guidance_scale) || 7.0,
-                    num_inference_steps: parseInt(num_inference_steps) || 30,
-                }
-            }
+            { input }
         );
 
         console.log("Received prediction response");
@@ -167,7 +204,11 @@ app.post("/generate", async (req, res) => {
                 
                 // Send the image as a base64 data URL
                 const base64Image = `data:image/webp;base64,${imageBuffer.toString('base64')}`;
-                res.render("result", { imageUrl: base64Image, prompt: prompt });
+                res.render("result", { 
+                    imageUrl: base64Image, 
+                    prompt: prompt,
+                    isImageToImage: !!req.file 
+                });
             } catch (streamError) {
                 console.error("Error processing stream:", streamError);
                 res.status(500).render("error", { 
@@ -179,7 +220,11 @@ app.post("/generate", async (req, res) => {
             const imageUrl = prediction[0];
             console.log("Image URL:", imageUrl);
             
-            res.render("result", { imageUrl, prompt: prompt });
+            res.render("result", { 
+                imageUrl, 
+                prompt: prompt,
+                isImageToImage: !!req.file 
+            });
         } else {
             console.error("Unexpected prediction format:", prediction);
             res.status(500).render("error", { 

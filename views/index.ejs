@@ -146,17 +146,126 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+
+        /* Image Upload Styles */
+        .upload-container {
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+
+        .upload-label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-label input[type="checkbox"] {
+            margin-right: 0.5rem;
+        }
+
+        .file-input-container {
+            display: none; /* Hidden by default */
+            margin-top: 0.5rem;
+        }
+
+        .file-input-container.active {
+            display: block;
+        }
+
+        .preview-container {
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .preview-container.active {
+            display: block;
+        }
+
+        .image-preview {
+            max-width: 100%;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .upload-button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: inline-block;
+            margin-top: 0;
+            width: auto;
+        }
+
+        .upload-info {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 0.3rem;
+        }
+
+        .file-name {
+            font-size: 0.8rem;
+            color: #333;
+            margin-top: 0.3rem;
+            font-style: italic;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Red Bull Doodles Generator</h1>
-        <form id="generate-form" action="/generate" method="POST">
-            <img src="https://res.cloudinary.com/dvz9gbvc9/image/upload/v1743054598/can_edit_1_yvaznk.png" alt="Red Bull Doodles Example" id="image-preview">
+        <form id="generate-form" action="/generate" method="POST" enctype="multipart/form-data">
+            <img src="https://res.cloudinary.com/dvz9gbvc9/image/upload/v1743054598/can_edit_1_yvaznk.png" alt="Red Bull Doodles Example" id="example-image">
             
             <!-- Prompt Input -->
             <label for="prompt">What do you want to create?</label>
             <textarea id="prompt" name="prompt" placeholder="a red bull car racing through the city..." rows="2" required></textarea>
+
+            <!-- Image Upload Option -->
+            <div class="upload-container">
+                <label class="upload-label">
+                    <input type="checkbox" id="use-image-toggle">
+                    Use a starting image (optional)
+                </label>
+                
+                <div id="file-input-container" class="file-input-container">
+                    <div class="file-input-wrapper">
+                        <button type="button" class="upload-button">Choose Image</button>
+                        <input type="file" id="image-upload" name="image" accept="image/*">
+                    </div>
+                    <div id="file-name" class="file-name"></div>
+                    <div class="upload-info">Supported formats: JPG, PNG, WEBP (Max 4MB)</div>
+                    
+                    <div id="preview-container" class="preview-container">
+                        <img id="image-preview" class="image-preview" src="#" alt="Your uploaded image">
+                    </div>
+                </div>
+            </div>
 
             <!-- Hidden input fields for defaults -->
             <input type="hidden" name="guidance_scale" value="7.0">
@@ -179,6 +288,53 @@
         textarea.addEventListener('input', () => {
             textarea.style.height = 'auto';
             textarea.style.height = textarea.scrollHeight + 'px';
+        });
+
+        // Toggle image upload section
+        const useImageToggle = document.getElementById('use-image-toggle');
+        const fileInputContainer = document.getElementById('file-input-container');
+        const imageUpload = document.getElementById('image-upload');
+        const previewContainer = document.getElementById('preview-container');
+        const imagePreview = document.getElementById('image-preview');
+        const fileName = document.getElementById('file-name');
+
+        useImageToggle.addEventListener('change', function() {
+            if (this.checked) {
+                fileInputContainer.classList.add('active');
+            } else {
+                fileInputContainer.classList.remove('active');
+                previewContainer.classList.remove('active');
+                imageUpload.value = '';
+                fileName.textContent = '';
+            }
+        });
+
+        // Handle file upload and preview
+        imageUpload.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const file = this.files[0];
+                
+                // Check file size (max 4MB)
+                if (file.size > 4 * 1024 * 1024) {
+                    alert('File size exceeds 4MB. Please choose a smaller image.');
+                    this.value = '';
+                    return;
+                }
+                
+                // Show file name
+                fileName.textContent = file.name;
+                
+                // Show image preview
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    previewContainer.classList.add('active');
+                };
+                reader.readAsDataURL(file);
+            } else {
+                previewContainer.classList.remove('active');
+                fileName.textContent = '';
+            }
         });
 
         // Show loading spinner when form is submitted
