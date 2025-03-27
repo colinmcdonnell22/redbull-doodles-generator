@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Error - Red Bull Doodles Generator</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+            color: #333;
+            margin: 0;
+            padding: 0.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            overflow-y: auto;
+        }
+
+        .container {
+            background: white;
+            border: 2px solid #e30613; /* Red Bull red color */
+            padding: 0.8rem;
+            border-radius: 10px;
+            max-width: 350px;
+            width: 100%;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.3rem;
+            margin: 0 0 0.6rem 0;
+            color: #e30613;
+            font-weight: bold;
+        }
+
+        .error-message {
+            background-color: #fff8f8;
+            border: 1px solid #ffdddd;
+            border-radius: 6px;
+            padding: 0.8rem;
+            margin: 1rem 0;
+            color: #d32f2f;
+            text-align: left;
+            font-size: 0.9rem;
+            word-break: break-word;
+        }
+
+        .button {
+            font-family: 'Arial', sans-serif;
+            background-color: #e30613;
+            color: #fff;
+            font-size: 0.9rem;
+            padding: 0.6rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+            margin-top: 0.6rem;
+            width: 100%;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .button:hover {
+            background-color: #c00511;
+            transform: translateY(-2px);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+        }
+
+        .button:active {
+            transform: translateY(1px);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Something Went Wrong</h1>
+        
+        <div class="error-message">
+            <%= error %>
+        </div>
+        
+        <p>Sorry, we encountered an error while generating your image. Please try again.</p>
+        
+        <a href="/" class="button">Back to Generator</a>
+    </div>
+    <script>
+        window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html> 

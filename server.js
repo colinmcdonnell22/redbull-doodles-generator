@@ -53,6 +53,8 @@ app.post("/generate", async (req, res) => {
         // Modify the prompt to include "in DOODL style" if needed
         const modifiedPrompt = ensureTweakInPrompt(prompt);
 
+        console.log("Sending request to Replicate with prompt:", modifiedPrompt);
+        
         // Use the exact model version from the API docs
         const prediction = await replicate.run(
             "colinmcdonnell22/redbull_doodles:14c616496f87e094a49107a67ef5b7221c25c8bbee980913cbd24e59ff3c2591",
@@ -60,22 +62,76 @@ app.post("/generate", async (req, res) => {
                 input: {
                     prompt: modifiedPrompt,
                     // Only include parameters if they're actually used by the model
-                    // Based on your API example, the model might only need the prompt
-                    // But we'll keep some basic parameters that might be useful
-                    guidance_scale: parseFloat(guidance_scale),
-                    num_inference_steps: parseInt(num_inference_steps),
+                    guidance_scale: parseFloat(guidance_scale) || 7.0,
+                    num_inference_steps: parseInt(num_inference_steps) || 30,
                 }
             }
         );
 
-        // From the docs, it appears the output might be an array of images
-        const imageUrl = prediction[0]; // The output is expected to be an array of image URLs
-
-        // Pass original prompt to the results page, not the modified one
-        res.render("result", { imageUrl, prompt: prompt }); 
+        console.log("Received prediction response");
+        
+        // The result might be a ReadableStream
+        if (prediction[0] && prediction[0] instanceof ReadableStream) {
+            console.log("Processing ReadableStream response...");
+            try {
+                // Convert the ReadableStream to a Buffer
+                const streamResponse = prediction[0];
+                const reader = streamResponse.getReader();
+                const chunks = [];
+                
+                let done = false;
+                while (!done) {
+                    const { value, done: doneReading } = await reader.read();
+                    done = doneReading;
+                    if (value) {
+                        chunks.push(value);
+                    }
+                }
+                
+                // Combine the chunks into a single Buffer
+                const imageBuffer = Buffer.concat(chunks);
+                console.log(`Successfully processed image stream (${imageBuffer.length} bytes)`);
+                
+                // Send the image as a base64 data URL
+                const base64Image = `data:image/webp;base64,${imageBuffer.toString('base64')}`;
+                res.render("result", { imageUrl: base64Image, prompt: prompt });
+            } catch (streamError) {
+                console.error("Error processing stream:", streamError);
+                res.status(500).render("error", { 
+                    error: "Error processing the image stream. Please try again." 
+                });
+            }
+        } else if (prediction[0] && typeof prediction[0] === 'string') {
+            // Handle as URL if it's a string (direct URL)
+            const imageUrl = prediction[0];
+            console.log("Image URL:", imageUrl);
+            
+            res.render("result", { imageUrl, prompt: prompt });
+        } else {
+            console.error("Unexpected prediction format:", prediction);
+            res.status(500).render("error", { 
+                error: "Received an unexpected response format from the image generation service."
+            });
+        }
     } catch (error) {
         console.error("Error generating image:", error);
-        res.status(500).send("Something went wrong!");
+        
+        let errorMessage = "Something went wrong while generating your image.";
+        
+        // Check for specific error types
+        if (error.message && error.message.includes("API key")) {
+            errorMessage = "API authentication error. Please check your API key.";
+        } else if (error.message && error.message.includes("timed out")) {
+            errorMessage = "The request timed out. Please try again with a simpler prompt.";
+        } else if (error.response && error.response.status === 429) {
+            errorMessage = "Rate limit exceeded. Please wait a moment and try again.";
+        } else if (error.response && error.response.data && error.response.data.detail) {
+            errorMessage = error.response.data.detail;
+        } else if (error.message) {
+            errorMessage = error.message;
+        }
+        
+        res.status(500).render("error", { error: errorMessage });
     }
 });
 
