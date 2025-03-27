@@ -28,6 +28,7 @@
             width: 100%;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             text-align: center;
+            position: relative; /* Added for positioning the overlay */
         }
 
         h1 {
@@ -107,12 +108,50 @@
             transform: translateY(1px);
             box-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
+
+        /* Loading Overlay Styles */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            z-index: 10;
+            display: none; /* Initially hidden */
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(227, 6, 19, 0.2);
+            border-radius: 50%;
+            border-top-color: #e30613;
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 15px;
+        }
+
+        .loading-text {
+            color: #e30613;
+            font-weight: bold;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Red Bull Doodles Generator</h1>
-        <form action="/generate" method="POST">
+        <form id="generate-form" action="/generate" method="POST">
             <img src="https://res.cloudinary.com/dvz9gbvc9/image/upload/v1743054598/can_edit_1_yvaznk.png" alt="Red Bull Doodles Example" id="image-preview">
             
             <!-- Prompt Input -->
@@ -124,8 +163,14 @@
             <input type="hidden" name="num_inference_steps" value="30">
 
             <!-- Submit Button -->
-            <button type="submit">Generate</button>
+            <button type="submit" id="generate-button">Generate</button>
         </form>
+
+        <!-- Loading Overlay -->
+        <div class="loading-overlay" id="loading-overlay">
+            <div class="spinner"></div>
+            <div class="loading-text">Creating your Red Bull Doodle...</div>
+        </div>
     </div>
 
     <script>
@@ -135,10 +180,31 @@
             textarea.style.height = 'auto';
             textarea.style.height = textarea.scrollHeight + 'px';
         });
+
+        // Show loading spinner when form is submitted
+        const form = document.getElementById('generate-form');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const generateButton = document.getElementById('generate-button');
+
+        form.addEventListener('submit', function(e) {
+            // Check form validity first
+            if (!form.checkValidity()) {
+                return; // Let the browser handle invalid form
+            }
+            
+            // Show the loading overlay
+            loadingOverlay.style.display = 'flex';
+            
+            // Disable the button to prevent multiple submissions
+            generateButton.disabled = true;
+            generateButton.textContent = 'Generating...';
+            
+            // The form will submit normally, taking the user to the results page
+        });
     </script>
     <script>
         window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-      </script>
+    </script>
     <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>

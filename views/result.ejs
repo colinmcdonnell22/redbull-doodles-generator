@@ -120,14 +120,65 @@
         .prompt-display p {
             margin: 0;
         }
+
+        .button-container {
+            display: flex;
+            gap: 0.6rem;
+            margin-top: 0.6rem;
+        }
+
+        .button-secondary {
+            background-color: #333;
+        }
+
+        .button-secondary:hover {
+            background-color: #222;
+        }
+
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            z-index: 10;
+            display: none; /* Initially hidden */
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(227, 6, 19, 0.2);
+            border-radius: 50%;
+            border-top-color: #e30613;
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 15px;
+        }
+
+        .loading-text {
+            color: #e30613;
+            font-weight: bold;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Red Bull Doodles Generator</h1>
-        <form action="/generate" method="POST">
+        <form id="generate-form" action="/generate" method="POST">
             <!-- Generated Image -->
-            <img src="<%= imageUrl %>" alt="Generated Image">
+            <img src="<%= imageUrl %>" alt="Generated Image" id="generated-image">
             
             <!-- Prompt Display -->
             <div class="prompt-display">
@@ -142,11 +193,86 @@
             <input type="hidden" name="guidance_scale" value="7.0">
             <input type="hidden" name="num_inference_steps" value="30">
 
-            <!-- Submit Button -->
-            <button type="submit">Generate</button>
+            <!-- Button Container -->
+            <div class="button-container">
+                <button type="submit" id="generate-button">Create New Doodle</button>
+                <button type="button" id="download-button" class="button-secondary">Download</button>
+            </div>
         </form>
+
+        <!-- Loading Overlay -->
+        <div class="loading-overlay" id="loading-overlay">
+            <div class="spinner"></div>
+            <div class="loading-text">Creating your Red Bull Doodle...</div>
+        </div>
     </div>
 
+    <script>
+        // Show loading spinner when form is submitted
+        const form = document.getElementById('generate-form');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const generateButton = document.getElementById('generate-button');
+        const downloadButton = document.getElementById('download-button');
+        const generatedImage = document.getElementById('generated-image');
+
+        form.addEventListener('submit', function(e) {
+            // Check form validity first
+            if (!form.checkValidity()) {
+                return; // Let the browser handle invalid form
+            }
+            
+            // Show the loading overlay
+            loadingOverlay.style.display = 'flex';
+            
+            // Disable the buttons to prevent multiple submissions
+            generateButton.disabled = true;
+            downloadButton.disabled = true;
+            
+            // The form will submit normally, taking the user to the results page
+        });
+
+        // Set up download functionality
+        downloadButton.addEventListener('click', function() {
+            const imageUrl = generatedImage.src;
+            
+            // Create a virtual link and trigger download
+            const downloadLink = document.createElement('a');
+            
+            // If the image is a data URL (base64), we can download it directly
+            if (imageUrl.startsWith('data:')) {
+                downloadLink.href = imageUrl;
+                downloadLink.download = `red-bull-doodle-${Date.now()}.webp`;
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+            } 
+            // If it's a remote URL, we need to fetch it first
+            else {
+                // Show feedback
+                downloadButton.textContent = "Downloading...";
+                
+                fetch(imageUrl)
+                    .then(response => response.blob())
+                    .then(blob => {
+                        const blobUrl = window.URL.createObjectURL(blob);
+                        downloadLink.href = blobUrl;
+                        downloadLink.download = `red-bull-doodle-${Date.now()}.webp`;
+                        document.body.appendChild(downloadLink);
+                        downloadLink.click();
+                        window.URL.revokeObjectURL(blobUrl);
+                        document.body.removeChild(downloadLink);
+                        downloadButton.textContent = "Download";
+                    })
+                    .catch(error => {
+                        console.error('Download failed:', error);
+                        downloadButton.textContent = "Download Failed";
+                        setTimeout(() => {
+                            downloadButton.textContent = "Download";
+                        }, 2000);
+                    });
+            }
+        });
+    </script>
     <script>
         window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
     </script>
