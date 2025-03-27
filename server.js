@@ -14,6 +14,15 @@ const __dirname = path.dirname(__filename);
 const app = express(); // Initialize Express
 const port = process.env.PORT || 3001; // Use dynamic port from environment or fallback to 3001
 
+// Debug environment variables
+console.log("Environment setup:", {
+    nodeEnv: process.env.NODE_ENV,
+    hasApiToken: !!process.env.REPLICATE_API_TOKEN,
+    apiTokenLength: process.env.REPLICATE_API_TOKEN ? process.env.REPLICATE_API_TOKEN.length : 0,
+    // Don't log the actual token for security reasons
+    apiTokenFirstChars: process.env.REPLICATE_API_TOKEN ? `${process.env.REPLICATE_API_TOKEN.substring(0, 4)}...` : 'none'
+});
+
 // Configure Replicate client
 const replicate = new Replicate({
     auth: process.env.REPLICATE_API_TOKEN, // Use API token from .env file
@@ -44,6 +53,37 @@ const ensureTweakInPrompt = (prompt) => {
 // Serve the form page
 app.get("/", (req, res) => {
     res.render("index"); // Render the 'index.ejs' file
+});
+
+// Health check route for testing API connectivity
+app.get("/api-check", async (req, res) => {
+    try {
+        console.log("Checking Replicate API connection...");
+        // Simple validation of the API token setup
+        if (!process.env.REPLICATE_API_TOKEN) {
+            return res.status(500).json({ 
+                status: "error", 
+                message: "API token not configured" 
+            });
+        }
+        
+        // Test API connectivity with a minimal request
+        const testResult = await replicate.models.get("stability-ai/stable-diffusion");
+        
+        return res.json({ 
+            status: "success", 
+            message: "API connection successful",
+            hasApiToken: !!process.env.REPLICATE_API_TOKEN,
+            tokenLength: process.env.REPLICATE_API_TOKEN.length
+        });
+    } catch (error) {
+        console.error("API check error:", error);
+        return res.status(500).json({ 
+            status: "error", 
+            message: error.message || "Unknown error",
+            stack: process.env.NODE_ENV === 'production' ? null : error.stack
+        });
+    }
 });
 
 // Handle form submission and generate the image
