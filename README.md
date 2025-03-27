@@ -1,6 +1,10 @@
-# my-replicate-app
+# Red Bull Doodles Generator
 
-This is a scaffoled Node.js project structure for running AI models with [Replicate's API](https://replicate.com/docs/get-started/nodejs).
+A web application for generating images in the Red Bull doodle style using [Replicate's API](https://replicate.com/colinmcdonnell22/redbull_doodles).
+
+## About
+
+This application uses the Red Bull Doodles model trained by Colin McDonnell, available on Replicate. It allows users to enter text prompts and generate images that match the unique Red Bull artistic style.
 
 ## Usage
 
@@ -12,8 +16,21 @@ Next, grab a Replicate API token from [replicate.com/account](http://replicate.c
 export REPLICATE_API_TOKEN=...
 ```
 
+Or create a .env file with:
+
+```
+REPLICATE_API_TOKEN=your_token_here
+```
+
 Then run your app:
 
 ```console
+npm install
 npm start
 ```
+
+## Features
+
+- Generate images in the Red Bull doodle style
+- Adjust parameters like quality, detail level, and style intensity
+- Simple and intuitive user interface

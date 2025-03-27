@@ -12,7 +12,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express(); // Initialize Express
-const port = process.env.PORT || 3000; // Use dynamic port from environment or fallback to 3000
+const port = process.env.PORT || 3001; // Use dynamic port from environment or fallback to 3001
 
 // Configure Replicate client
 const replicate = new Replicate({
@@ -25,17 +25,15 @@ app.set("view engine", "ejs"); // Use EJS for templating
 app.use(express.static("public")); // Serve static files from the "public" folder
 app.use(bodyParser.urlencoded({ extended: true })); // Parse form data
 
-// Function to ensure "tweak" is in the prompt
+// Function to ensure "DOODL style" is in the prompt
 const ensureTweakInPrompt = (prompt) => {
-    const lowerPrompt = prompt.toLowerCase();
-
-    // Check if "tweak" is already in the prompt
-    if (lowerPrompt.includes("tweak")) {
-        return prompt; // Return the prompt as is
+    // Check if the prompt already contains "DOODL" 
+    if (prompt.toLowerCase().includes("doodl")) {
+        return prompt; // Return the prompt as is if it already mentions DOODL
     }
-
-    // Add "<tweaks>" to the prompt if not present
-    return `${prompt} <tweaks>`;
+    
+    // Add "in DOODL style" to the end of the prompt
+    return `${prompt} in DOODL style`;
 };
 
 // Serve the form page
@@ -47,42 +45,34 @@ app.get("/", (req, res) => {
 app.post("/generate", async (req, res) => {
     const {
         prompt, // User input
-        lora_scale,
-        aspect_ratio,
         guidance_scale,
-        prompt_strength,
         num_inference_steps,
     } = req.body;
 
     try {
-        // Ensure "<tweaks>" is appended internally
+        // Modify the prompt to include "in DOODL style" if needed
         const modifiedPrompt = ensureTweakInPrompt(prompt);
 
+        // Use the exact model version from the API docs
         const prediction = await replicate.run(
-            "colinmcdonnell22/050md_ai:ffe5df4d14346fa97383cdcec0ec90ecd29b4146c34e663434ea10b1bf2af60d",
+            "colinmcdonnell22/redbull_doodles:14c616496f87e094a49107a67ef5b7221c25c8bbee980913cbd24e59ff3c2591",
             {
                 input: {
-                    model: "dev", // Fixed value
-                    prompt: modifiedPrompt, // Backend uses the modified prompt
-                    go_fast: true, // Fixed value
-                    lora_scale: Math.min(parseFloat(lora_scale), 3), // Ensure lora_scale does not exceed 3
-                    extra_lora_scale: 1, // Fixed value
-                    megapixels: "1", // Fixed value
-                    num_outputs: 1, // Fixed to always generate 1 output
-                    aspect_ratio,
-                    output_format: "png", // Fixed value
+                    prompt: modifiedPrompt,
+                    // Only include parameters if they're actually used by the model
+                    // Based on your API example, the model might only need the prompt
+                    // But we'll keep some basic parameters that might be useful
                     guidance_scale: parseFloat(guidance_scale),
-                    output_quality: 80, // Fixed value
-                    prompt_strength: parseFloat(prompt_strength),
                     num_inference_steps: parseInt(num_inference_steps),
-                },
+                }
             }
         );
 
-        const imageUrl = prediction; // The output is the image URL
+        // From the docs, it appears the output might be an array of images
+        const imageUrl = prediction[0]; // The output is expected to be an array of image URLs
 
-        // Pass original prompt (without <tweaks>) to the results page
-        res.render("result", { imageUrl, prompt }); 
+        // Pass original prompt to the results page, not the modified one
+        res.render("result", { imageUrl, prompt: prompt }); 
     } catch (error) {
         console.error("Error generating image:", error);
         res.status(500).send("Something went wrong!");
