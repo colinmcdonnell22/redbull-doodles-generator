@@ -27,6 +27,11 @@ app.use(bodyParser.urlencoded({ extended: true })); // Parse form data
 
 // Function to ensure "DOODL style" is in the prompt
 const ensureTweakInPrompt = (prompt) => {
+    // Check if prompt exists
+    if (!prompt) {
+        return "DOODL style"; // Return a default prompt if the input is undefined
+    }
+    
     // Check if the prompt already contains "DOODL" 
     if (prompt.toLowerCase().includes("doodl")) {
         return prompt; // Return the prompt as is if it already mentions DOODL
@@ -43,11 +48,30 @@ app.get("/", (req, res) => {
 
 // Handle form submission and generate the image
 app.post("/generate", async (req, res) => {
-    const {
-        prompt, // User input
-        guidance_scale,
-        num_inference_steps,
-    } = req.body;
+    console.log("Received form submission:", {
+        hasBody: !!req.body,
+        contentType: req.get('Content-Type'),
+        bodyKeys: req.body ? Object.keys(req.body) : [],
+        bodyValues: JSON.stringify(req.body)
+    });
+
+    // Validate request body
+    if (!req.body) {
+        return res.status(400).render("error", { 
+            error: "Missing request body" 
+        });
+    }
+
+    // Get form data with validation
+    const prompt = req.body.prompt || ""; // Default to empty string if undefined
+    const guidance_scale = req.body.guidance_scale || "7.0";
+    const num_inference_steps = req.body.num_inference_steps || "30";
+    
+    if (!prompt.trim()) {
+        return res.status(400).render("error", { 
+            error: "Please enter a prompt to generate an image" 
+        });
+    }
 
     try {
         // Modify the prompt to include "in DOODL style" if needed
