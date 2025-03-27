@@ -41,13 +41,22 @@ const ensureTweakInPrompt = (prompt) => {
         return "DOODL style"; // Return a default prompt if the input is undefined
     }
     
-    // Check if the prompt already contains "DOODL" 
-    if (prompt.toLowerCase().includes("doodl")) {
-        return prompt; // Return the prompt as is if it already mentions DOODL
+    // Create a properly formatted prompt with DOODL at the beginning and end
+    let modifiedPrompt = prompt.trim();
+    
+    // Only add DOODL prefix if it's not already at the beginning
+    if (!modifiedPrompt.toLowerCase().startsWith("doodl")) {
+        modifiedPrompt = `DOODL ${modifiedPrompt}`;
     }
     
-    // Add "in DOODL style" to the end of the prompt
-    return `${prompt} in DOODL style`;
+    // Only add "in DOODL style" if it's not already at the end
+    if (!modifiedPrompt.toLowerCase().endsWith("doodl style") && 
+        !modifiedPrompt.toLowerCase().includes("in doodl style")) {
+        modifiedPrompt = `${modifiedPrompt} in DOODL style`;
+    }
+    
+    console.log(`Original prompt: "${prompt}" | Modified prompt: "${modifiedPrompt}"`);
+    return modifiedPrompt;
 };
 
 // Serve the form page
