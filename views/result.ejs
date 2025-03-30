@@ -171,6 +171,15 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+        
+        /* Credit line style */
+        .credit-line {
+            font-size: 0.7rem;
+            color: #999;
+            text-align: center;
+            margin-top: 1rem;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -203,6 +212,9 @@
                 <button type="submit" id="generate-button">Create New Doodle</button>
                 <button type="button" id="download-button" class="button-secondary">Download</button>
             </div>
+            
+            <!-- Credit Line -->
+            <div class="credit-line">Made with 🪽❤️ by Colin McDonnell</div>
         </form>
 
         <!-- Loading Overlay -->
