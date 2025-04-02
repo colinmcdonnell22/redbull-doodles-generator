@@ -6,7 +6,6 @@ import path from "path";
 import { fileURLToPath } from "url";
 import multer from "multer"; // For handling multipart/form-data (file uploads)
 import fs from "fs";
-import session from "express-session"; // For handling user sessions
 import cookieParser from "cookie-parser"; // For parsing cookies
 
 dotenv.config(); // Load environment variables from .env file
@@ -52,20 +51,7 @@ const upload = multer({
 });
 
 // Cookie parser middleware
-app.use(cookieParser());
-
-// Session middleware
-app.use(session({
-    secret: process.env.SESSION_SECRET || 'redbulldoodlessecret2024',
-    resave: false,
-    saveUninitialized: true,
-    cookie: { 
-        secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
-        maxAge: 1000 * 60 * 60 * 24, // 24 hours
-        sameSite: 'lax',
-        httpOnly: true
-    }
-}));
+app.use(cookieParser(process.env.SESSION_SECRET || 'redbulldoodlessecret2024'));
 
 // Middleware
 app.set("views", path.join(__dirname, "views")); // Explicitly set the views directory
@@ -76,14 +62,13 @@ app.use(bodyParser.urlencoded({ extended: true })); // Parse form data
 // Authentication middleware
 const requireLogin = (req, res, next) => {
     console.log("Authentication check:", {
-        hasSession: !!req.session,
-        isAuthenticated: req.session && req.session.isAuthenticated,
-        sessionID: req.sessionID
+        hasAuthCookie: !!req.cookies.isAuthenticated,
+        cookiesReceived: Object.keys(req.cookies)
     });
     
     // If user is authenticated, continue to next middleware
-    if (req.session && req.session.isAuthenticated) {
-        console.log("User is authenticated, proceeding to route");
+    if (req.cookies.isAuthenticated === 'true') {
+        console.log("User is authenticated via cookie, proceeding to route");
         return next();
     }
     
@@ -123,7 +108,8 @@ const ensureTweakInPrompt = (prompt) => {
 // Login page route
 app.get("/login", (req, res) => {
     // If already authenticated, redirect to homepage
-    if (req.session.isAuthenticated) {
+    if (req.cookies.isAuthenticated === 'true') {
+        console.log("User already authenticated via cookie, redirecting to homepage");
         return res.redirect('/');
     }
     res.render("login", { error: null });
@@ -138,19 +124,20 @@ app.post("/login", (req, res) => {
     
     // Check if password matches
     if (password === SITE_PASSWORD) {
-        // Set session as authenticated
-        req.session.isAuthenticated = true;
-        console.log("Authentication successful, session set:", req.session);
+        // Set cookie as authenticated
+        console.log("Authentication successful, setting cookie");
         
-        // Save session explicitly before redirect
-        req.session.save((err) => {
-            if (err) {
-                console.error("Error saving session:", err);
-                return res.status(500).render("error", { error: "Session error. Please try again." });
-            }
-            console.log("Session saved, redirecting to home page");
-            return res.redirect('/');
+        // Set a simple cookie with authentication flag
+        res.cookie('isAuthenticated', 'true', {
+            maxAge: 24 * 60 * 60 * 1000, // 24 hours
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+            sameSite: 'lax',
+            path: '/'
         });
+        
+        console.log("Cookie set, redirecting to home page");
+        return res.redirect('/');
     } else {
         console.log("Authentication failed: incorrect password");
         // If password doesn't match, show error
@@ -160,21 +147,15 @@ app.post("/login", (req, res) => {
 
 // Logout route
 app.get("/logout", (req, res) => {
-    // Destroy the session
-    req.session.destroy((err) => {
-        if (err) {
-            console.error("Error destroying session:", err);
-        }
-        res.redirect('/login');
-    });
+    // Clear the authentication cookie
+    res.clearCookie('isAuthenticated');
+    console.log("User logged out, cookie cleared");
+    res.redirect('/login');
 });
 
 // Serve the form page (protected by authentication)
 app.get("/", requireLogin, (req, res) => {
-    console.log("Rendering home page for authenticated user:", {
-        sessionID: req.sessionID,
-        isAuthenticated: req.session.isAuthenticated
-    });
+    console.log("Rendering home page for authenticated user");
     res.render("index"); // Render the 'index.ejs' file
 });
 
