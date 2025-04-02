@@ -6,6 +6,8 @@ import path from "path";
 import { fileURLToPath } from "url";
 import multer from "multer"; // For handling multipart/form-data (file uploads)
 import fs from "fs";
+import session from "express-session"; // For handling user sessions
+import cookieParser from "cookie-parser"; // For parsing cookies
 
 dotenv.config(); // Load environment variables from .env file
 
@@ -49,11 +51,38 @@ const upload = multer({
     }
 });
 
+// Cookie parser middleware
+app.use(cookieParser());
+
+// Session middleware
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'redbulldoodlessecret2024',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { 
+        secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+        maxAge: 1000 * 60 * 60 * 24 // 24 hours
+    }
+}));
+
 // Middleware
 app.set("views", path.join(__dirname, "views")); // Explicitly set the views directory
 app.set("view engine", "ejs"); // Use EJS for templating
 app.use(express.static("public")); // Serve static files from the "public" folder
 app.use(bodyParser.urlencoded({ extended: true })); // Parse form data
+
+// Authentication middleware
+const requireLogin = (req, res, next) => {
+    // If user is authenticated, continue to next middleware
+    if (req.session.isAuthenticated) {
+        return next();
+    }
+    // Otherwise redirect to login page
+    res.redirect('/login');
+};
+
+// Define the password - ideally this would be in an environment variable
+const SITE_PASSWORD = process.env.SITE_PASSWORD || 'redbulldoodles2024';
 
 // Function to ensure "DOODL style" is in the prompt
 const ensureTweakInPrompt = (prompt) => {
@@ -80,13 +109,48 @@ const ensureTweakInPrompt = (prompt) => {
     return modifiedPrompt;
 };
 
-// Serve the form page
-app.get("/", (req, res) => {
+// Login page route
+app.get("/login", (req, res) => {
+    // If already authenticated, redirect to homepage
+    if (req.session.isAuthenticated) {
+        return res.redirect('/');
+    }
+    res.render("login", { error: null });
+});
+
+// Login form submission
+app.post("/login", (req, res) => {
+    const { password } = req.body;
+    
+    // Check if password matches
+    if (password === SITE_PASSWORD) {
+        // Set session as authenticated
+        req.session.isAuthenticated = true;
+        return res.redirect('/');
+    }
+    
+    // If password doesn't match, show error
+    res.render("login", { error: "Incorrect password. Please try again." });
+});
+
+// Logout route
+app.get("/logout", (req, res) => {
+    // Destroy the session
+    req.session.destroy((err) => {
+        if (err) {
+            console.error("Error destroying session:", err);
+        }
+        res.redirect('/login');
+    });
+});
+
+// Serve the form page (protected by authentication)
+app.get("/", requireLogin, (req, res) => {
     res.render("index"); // Render the 'index.ejs' file
 });
 
 // Health check route for testing API connectivity
-app.get("/api-check", async (req, res) => {
+app.get("/api-check", requireLogin, async (req, res) => {
     try {
         console.log("Checking Replicate API connection...");
         // Simple validation of the API token setup
@@ -116,8 +180,8 @@ app.get("/api-check", async (req, res) => {
     }
 });
 
-// Handle form submission and generate the image
-app.post("/generate", upload.single('image'), async (req, res) => {
+// Handle form submission and generate the image (protected by authentication)
+app.post("/generate", requireLogin, upload.single('image'), async (req, res) => {
     console.log("Received form submission:", {
         hasBody: !!req.body,
         contentType: req.get('Content-Type'),

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Login - Red Bull Doodles Generator</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+            color: #333;
+            margin: 0;
+            padding: 0.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-y: auto;
+        }
+
+        .container {
+            background: white;
+            border: 2px solid #e30613; /* Red Bull red color */
+            padding: 1.5rem;
+            border-radius: 10px;
+            max-width: 350px;
+            width: 100%;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.3rem;
+            margin: 0 0 1rem 0;
+            color: #e30613;
+            font-weight: bold;
+        }
+
+        .logo {
+            width: 60px;
+            height: auto;
+            margin: 0 auto 1rem;
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+
+        label {
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+            display: block;
+            color: #333;
+        }
+
+        input[type="password"] {
+            font-family: 'Arial', sans-serif;
+            font-size: 0.9rem;
+            padding: 0.6rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            width: 100%;
+            background: #f9f9f9;
+            color: #333;
+            box-sizing: border-box;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #e30613;
+            box-shadow: 0 0 0 2px rgba(227, 6, 19, 0.2);
+        }
+
+        button {
+            font-family: 'Arial', sans-serif;
+            background-color: #e30613;
+            color: #fff;
+            font-size: 0.9rem;
+            padding: 0.6rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #c00511;
+            transform: translateY(-2px);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+        }
+
+        button:active {
+            transform: translateY(1px);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .error-message {
+            color: #e30613;
+            font-size: 0.8rem;
+            margin-top: 1rem;
+            padding: 0.5rem;
+            background-color: rgba(227, 6, 19, 0.1);
+            border-radius: 4px;
+            display: none;
+        }
+
+        /* Credit line style */
+        .credit-line {
+            font-size: 0.7rem;
+            color: #999;
+            text-align: center;
+            margin-top: 1rem;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Red Bull Doodles Generator</h1>
+        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/f/f4/Red_Bull_logo.svg/1200px-Red_Bull_logo.svg.png" alt="Red Bull Logo" class="logo">
+        
+        <form action="/login" method="POST">
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter password" required>
+            </div>
+            
+            <button type="submit">Log In</button>
+            
+            <% if (error) { %>
+                <div class="error-message" style="display: block;">
+                    <%= error %>
+                </div>
+            <% } else { %>
+                <div class="error-message" style="display: none;"></div>
+            <% } %>
+        </form>
+        
+        <!-- Credit Line -->
+        <div class="credit-line">Made with 🪽❤️ by Colin McDonnell</div>
+    </div>
+</body>
+</html> 
