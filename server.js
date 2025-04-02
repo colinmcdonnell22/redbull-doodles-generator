@@ -61,7 +61,9 @@ app.use(session({
     saveUninitialized: true,
     cookie: { 
         secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
-        maxAge: 1000 * 60 * 60 * 24 // 24 hours
+        maxAge: 1000 * 60 * 60 * 24, // 24 hours
+        sameSite: 'lax',
+        httpOnly: true
     }
 }));
 
@@ -73,10 +75,19 @@ app.use(bodyParser.urlencoded({ extended: true })); // Parse form data
 
 // Authentication middleware
 const requireLogin = (req, res, next) => {
+    console.log("Authentication check:", {
+        hasSession: !!req.session,
+        isAuthenticated: req.session && req.session.isAuthenticated,
+        sessionID: req.sessionID
+    });
+    
     // If user is authenticated, continue to next middleware
-    if (req.session.isAuthenticated) {
+    if (req.session && req.session.isAuthenticated) {
+        console.log("User is authenticated, proceeding to route");
         return next();
     }
+    
+    console.log("User is not authenticated, redirecting to login");
     // Otherwise redirect to login page
     res.redirect('/login');
 };
@@ -120,17 +131,31 @@ app.get("/login", (req, res) => {
 
 // Login form submission
 app.post("/login", (req, res) => {
+    console.log("Login attempt received");
     const { password } = req.body;
+    
+    console.log("Password check:", password === SITE_PASSWORD);
     
     // Check if password matches
     if (password === SITE_PASSWORD) {
         // Set session as authenticated
         req.session.isAuthenticated = true;
-        return res.redirect('/');
+        console.log("Authentication successful, session set:", req.session);
+        
+        // Save session explicitly before redirect
+        req.session.save((err) => {
+            if (err) {
+                console.error("Error saving session:", err);
+                return res.status(500).render("error", { error: "Session error. Please try again." });
+            }
+            console.log("Session saved, redirecting to home page");
+            return res.redirect('/');
+        });
+    } else {
+        console.log("Authentication failed: incorrect password");
+        // If password doesn't match, show error
+        res.render("login", { error: "Incorrect password. Please try again." });
     }
-    
-    // If password doesn't match, show error
-    res.render("login", { error: "Incorrect password. Please try again." });
 });
 
 // Logout route
@@ -146,6 +171,10 @@ app.get("/logout", (req, res) => {
 
 // Serve the form page (protected by authentication)
 app.get("/", requireLogin, (req, res) => {
+    console.log("Rendering home page for authenticated user:", {
+        sessionID: req.sessionID,
+        isAuthenticated: req.session.isAuthenticated
+    });
     res.render("index"); // Render the 'index.ejs' file
 });
 
